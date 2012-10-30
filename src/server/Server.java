@@ -73,7 +73,10 @@ public class Server implements Runnable {
 
     public void stop() throws Exception {
         running = false;
-        myThread.join();
+
+        if (myThread != null) {
+            myThread.join();
+        }
     }
 
     @Override

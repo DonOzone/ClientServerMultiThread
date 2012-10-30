@@ -91,7 +91,7 @@ public class Attendant implements Runnable {
                     break;
                 }
                 myPrintStream.println(message);
-                
+
             } catch (SocketTimeoutException e) {
             } catch (Exception e) {
                 System.out.print(e);
@@ -115,6 +115,9 @@ public class Attendant implements Runnable {
 
     public void stop() throws Exception {
         running = false;
-        myThread.join();
+
+        if (myThread != null) {
+            myThread.join();
+        }
     }
 }
