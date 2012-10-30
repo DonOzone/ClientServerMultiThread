@@ -4,12 +4,16 @@
  */
 package server;
 
+import client.ClientForm;
+import java.awt.ComponentOrientation;
+import java.io.File;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -19,25 +23,29 @@ public class Server implements Runnable {
 
     private ServerSocket myServerSocket;
     private boolean running;
-    private boolean initalized;
+    private static boolean initialized;
     private Thread myThread;
     private List<Attendant> listAttendants;
-
+    private static final String serverDir = "D:/projects/java/ClientServerSocket/server/";
     /**
      *
      * @param port
      */
     public Server(int port) throws Exception {
         this.listAttendants = new ArrayList<Attendant>();
-        this.initalized = false;
+        this.initialized = false;
         this.running = false;
-
+        
         openPort(port);
     }
 
     private void openPort(int port) throws Exception {
         myServerSocket = new ServerSocket(port);
-        initalized = true;
+        initialized = true;
+    }
+
+    public static boolean isInitialized() {
+        return initialized;
     }
 
     private void close() {
@@ -55,14 +63,14 @@ public class Server implements Runnable {
             System.out.println(e);
         }
         myServerSocket = null;
-        initalized = false;
+        initialized = false;
         running = false;
 
         myThread = null;
     }
 
     public void start() {
-        if (!initalized || running) {
+        if (!initialized || running) {
             return;
         }
 
@@ -82,21 +90,24 @@ public class Server implements Runnable {
     @Override
     public void run() {
         // tela servidor exibe 'aguardadndo conexão'
-        System.out.println("Aguardando conexão...");
-
+        ServerForm.txtAreaOutput.append("Aguardando cliente ...\n");
+        DefaultListModel listModel = new DefaultListModel();
+        
         while (running) {
             try {
                 myServerSocket.setSoTimeout(2500);
                 Socket mySocket = myServerSocket.accept();
-
-                // tela servidor exibe 'conexão estabelecida'
-                System.out.println("Conexão estabelecida...");
 
                 // classe Atendente que receberá os clientes (threads)
                 Attendant myAttendant = new Attendant(mySocket);
                 myAttendant.start();
 
                 listAttendants.add(myAttendant);
+                
+                ServerForm.txtAreaOutput.append("Cliente conecatado. Porta "+myAttendant.getPort()+"\n");
+                
+                listModel.addElement("Cliente - Porta "+myAttendant.getPort());
+                ServerForm.listClients.setModel(listModel);
 
             } catch (SocketTimeoutException out) {
             } catch (Exception e) {
@@ -107,15 +118,12 @@ public class Server implements Runnable {
         close();
     }
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("Iniciando servidor...");
-        Server myServer = new Server(2525);
-        myServer.start();
-
-        System.out.println("ENTER para encerrar o servidor");
-        new Scanner(System.in).nextLine();
-
-        System.out.println("Encerrando servidor...");
-        myServer.stop();
+    public static void listFiles() {
+        DefaultListModel listDefault = new DefaultListModel();
+        File directory[] = new File(serverDir).listFiles();
+        for (int i = 0; i < directory.length; i++) {
+            listDefault.addElement(directory[i].getName());
+        }
+        ClientForm.listServerFiles.setModel(listDefault);
     }
 }

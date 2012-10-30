@@ -5,6 +5,9 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -12,16 +15,24 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Scanner;
+import server.ServerForm;
 
 /**
  *
  * @author nemesis635
  */
 public class Client implements Runnable {
-
     private Socket mySocket;
-    private BufferedReader myBufferedReader;
-    private PrintStream myPrintStream;
+    private DataInputStream myDataInputStream;
+    private DataOutputStream myDataOutputStream;
+
+    public DataInputStream getMyDataInputStream() {
+        return myDataInputStream;
+    }
+
+    public DataOutputStream getMyDataOutputStream() {
+        return myDataOutputStream;
+    }
     private boolean initialized;
     private boolean running;
     private Thread myThread;
@@ -29,6 +40,7 @@ public class Client implements Runnable {
     public Client(String address, int port) throws Exception {
         initialized = false;
         running = false;
+        
         open(address, port);
     }
 
@@ -36,8 +48,8 @@ public class Client implements Runnable {
         try {
             mySocket = new Socket(address, port);
 
-            myBufferedReader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
-            myPrintStream = new PrintStream(mySocket.getOutputStream());
+            myDataInputStream = new DataInputStream(mySocket.getInputStream());
+            myDataOutputStream = new DataOutputStream(mySocket.getOutputStream());
 
             initialized = true;
         } catch (Exception e) {
@@ -48,16 +60,16 @@ public class Client implements Runnable {
     }
 
     private void close() {
-        if (myBufferedReader != null) {
+        if (myDataInputStream != null) {
             try {
-                myBufferedReader.close();
+                myDataInputStream.close();
             } catch (Exception e) {
                 System.out.println(e);
             }
         }
-        if (myPrintStream != null) {
+        if (myDataOutputStream != null) {
             try {
-                myPrintStream.close();
+                myDataOutputStream.close();
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -70,8 +82,8 @@ public class Client implements Runnable {
             }
         }
 
-        myBufferedReader = null;
-        myPrintStream = null;
+        myDataInputStream = null;
+        myDataOutputStream = null;
         mySocket = null;
 
         initialized = false;
@@ -79,12 +91,16 @@ public class Client implements Runnable {
         myThread = null;
     }
 
-    public void send(String message) {
-        myPrintStream.println(message);
-    }
-
     private boolean isRunning() {
         return running;
+    }
+    
+    public void sendFlag(int opt) throws IOException {
+        myDataOutputStream.writeInt(opt);
+    }
+    
+    public void sendFile(String file) throws IOException {
+        myDataOutputStream.writeUTF(file);
     }
 
     public void start() {
@@ -111,14 +127,13 @@ public class Client implements Runnable {
 
             try {
                 mySocket.setSoTimeout(2500);
-                String message = myBufferedReader.readLine();
+                String message = myDataInputStream.readUTF();
 
                 if (message == null) {
                     break;
                 }
 
-                System.out.println(
-                        "Mensagem enviada pelo servidor: " + message);
+                ServerForm.txtAreaOutput.append(message + "\n");
             } catch (SocketTimeoutException e) {
             } catch (Exception e) {
                 System.out.println(e);
@@ -127,33 +142,6 @@ public class Client implements Runnable {
         }
         close();
     }
+   
 
-    public static void main(String[] args) throws Exception {
-        System.out.println("Iniciando cliente...");
-        System.out.println("Iniciando conexão com o servidor...");
-
-        Client myClient = new Client("localhost", 2525);
-        
-        System.out.println("Conexão estabelecida...");
-        
-        myClient.start();
-
-        Scanner myScanner = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("Digite uma mensagem...");
-            String message = myScanner.nextLine();
-
-            if (!myClient.isRunning()) {
-                break;
-            }
-            myClient.send(message);
-
-            if ("quit".equals(message)) {
-                break;
-            }
-        }
-        System.out.println("Encerrando cliente...");
-        myClient.stop();
-    }
 }

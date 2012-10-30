@@ -4,17 +4,37 @@
  */
 package client;
 
+import server.*;
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
 /**
  *
  * @author nemesis635
  */
 public class ClientForm extends javax.swing.JFrame {
 
+    private static final String clientDir = "D:/projects/java/ClientServerSocket/client/";
+    private static final String serverDir = "D:/projects/java/ClientServerSocket/server/";
+    Client myClient;
+
     /**
      * Creates new form Client
      */
-    public ClientForm() {
+    public ClientForm() throws Exception {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Não foi possível alterar o LookAndFeel: " + e);
+        }
         initComponents();
+
     }
 
     /**
@@ -26,21 +46,276 @@ public class ClientForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txtFdServer = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        btnConnect = new javax.swing.JButton();
+        txtFdFile = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listServerFiles = new javax.swing.JList();
+        jLabel2 = new javax.swing.JLabel();
+        btnUpload = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        btnChooseFile = new javax.swing.JButton();
+        lblStatus = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtAreaOutput = new javax.swing.JTextArea();
+        jLabel7 = new javax.swing.JLabel();
+        btnOpenTerminal = new javax.swing.JButton();
+        btnDisconnect = new javax.swing.JButton();
+        btnDownload = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Cliente utilizando MultiThreads");
+
+        txtFdServer.setText("localhost");
+
+        jLabel1.setText("Servidor");
+
+        btnConnect.setText("Conectar");
+        btnConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectActionPerformed(evt);
+            }
+        });
+
+        txtFdFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtFdFileMouseClicked(evt);
+            }
+        });
+        txtFdFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFdFileActionPerformed(evt);
+            }
+        });
+
+        jScrollPane1.setViewportView(listServerFiles);
+
+        jLabel2.setText("Arquvos do servidor");
+
+        btnUpload.setText("Upload >>");
+        btnUpload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUploadActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Fazer upload");
+
+        btnChooseFile.setText("Selecionar arquivo");
+        btnChooseFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseFileActionPerformed(evt);
+            }
+        });
+
+        lblStatus.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        lblStatus.setForeground(new java.awt.Color(255, 0, 0));
+        lblStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lblStatus.setText("Desconectado");
+
+        txtAreaOutput.setColumns(20);
+        txtAreaOutput.setRows(5);
+        jScrollPane2.setViewportView(txtAreaOutput);
+
+        jLabel7.setText("Mensagens de log");
+
+        btnOpenTerminal.setText("Abrir terminal");
+
+        btnDisconnect.setText("Desconectar");
+        btnDisconnect.setEnabled(false);
+        btnDisconnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDisconnectActionPerformed(evt);
+            }
+        });
+
+        btnDownload.setText("Baixar arquivo selecionado");
+        btnDownload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDownloadActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnOpenTerminal)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel1)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(txtFdServer, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(btnConnect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel3)
+                                            .addComponent(txtFdFile, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel7)))
+                                    .addGap(8, 8, 8)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(btnChooseFile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(btnUpload, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(btnDisconnect, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(lblStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)))))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                                .addComponent(btnDownload, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtFdServer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnConnect)
+                                    .addComponent(btnDisconnect))
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(10, 10, 10))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblStatus)
+                                .addGap(18, 18, 18)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtFdFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnChooseFile))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnUpload)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDownload)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnOpenTerminal)
+                .addGap(9, 9, 9))
         );
 
-        pack();
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width-667)/2, (screenSize.height-388)/2, 667, 388);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseFileActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser(clientDir);
+        String location = null;
+        try {
+            fileChooser.showSaveDialog(null);
+            location = fileChooser.getSelectedFile().getName();
+            txtFdFile.setText(location);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_btnChooseFileActionPerformed
+
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+        try {
+            // TODO add your handling code here:
+            myClient = new Client(txtFdServer.getText(), 2525);
+        } catch (Exception ex) {
+            Logger.getLogger(ClientForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        txtAreaOutput.append("Iniciando conexão com o servidor...\n");
+        myClient.start();
+
+        txtAreaOutput.append("Conexão estabelecida...\n");
+        btnConnect.setEnabled(false);
+        btnDisconnect.setEnabled(true);
+        lblStatus.setText("Conectado!");
+        lblStatus.setForeground(Color.blue);
+        Server.listFiles();
+
+    }//GEN-LAST:event_btnConnectActionPerformed
+
+    private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
+        // TODO add your handling code here:
+
+        try {
+            txtAreaOutput.append("Encerrando conexão...\n");
+            myClient.stop();
+            txtAreaOutput.append("Done!\n");
+
+            btnConnect.setEnabled(true);
+            btnDisconnect.setEnabled(false);
+            lblStatus.setText("Desconectado!");
+            lblStatus.setForeground(Color.red);
+
+        } catch (Exception ex) {
+            txtAreaOutput.append("Erro: " + ex + "\n");
+        }
+    }//GEN-LAST:event_btnDisconnectActionPerformed
+
+    private void txtFdFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtFdFileMouseClicked
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser(clientDir);
+        String location = null;
+        try {
+            fileChooser.showSaveDialog(null);
+            location = fileChooser.getSelectedFile().getName();
+            txtFdFile.setText(location);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }//GEN-LAST:event_txtFdFileMouseClicked
+
+    private void btnDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDownloadActionPerformed
+        // TODO add your handling code here:
+        String file = (String) listServerFiles.getSelectedValue();
+
+        try {
+            // 1 para upload
+            myClient.sendFlag(2);
+            myClient.sendFile(file);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDownloadActionPerformed
+
+    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
+        // TODO add your handling code here:
+        String file = txtFdFile.getText();
+
+        try {
+            // 1 para upload
+            myClient.sendFlag(1);
+            myClient.sendFile(file);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnUploadActionPerformed
+
+    private void txtFdFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFdFileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFdFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -73,10 +348,31 @@ public class ClientForm extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new ClientForm().setVisible(true);
+                try {
+                    new ClientForm().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(ClientForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChooseFile;
+    private javax.swing.JButton btnConnect;
+    private javax.swing.JButton btnDisconnect;
+    private javax.swing.JButton btnDownload;
+    private javax.swing.JButton btnOpenTerminal;
+    private javax.swing.JButton btnUpload;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblStatus;
+    public static javax.swing.JList listServerFiles;
+    public static javax.swing.JTextArea txtAreaOutput;
+    private javax.swing.JTextField txtFdFile;
+    private javax.swing.JTextField txtFdServer;
     // End of variables declaration//GEN-END:variables
 }
