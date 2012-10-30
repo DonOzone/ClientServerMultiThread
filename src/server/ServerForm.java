@@ -30,6 +30,7 @@ public class ServerForm extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Não foi possível alterar o LookAndFeel: " + e);
         }
+        setResizable(false);
         initComponents();
     }
 
@@ -60,6 +61,7 @@ public class ServerForm extends javax.swing.JFrame {
 
         jLabel1.setText("Clientes");
 
+        txtAreaOutput.setEditable(false);
         txtAreaOutput.setColumns(20);
         txtAreaOutput.setRows(5);
         jScrollPane2.setViewportView(txtAreaOutput);

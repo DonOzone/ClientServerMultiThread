@@ -33,6 +33,7 @@ public class ClientForm extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Não foi possível alterar o LookAndFeel: " + e);
         }
+        setResizable(false);
         initComponents();
 
     }
@@ -78,6 +79,7 @@ public class ClientForm extends javax.swing.JFrame {
             }
         });
 
+        txtFdFile.setEditable(false);
         txtFdFile.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 txtFdFileMouseClicked(evt);
@@ -114,6 +116,7 @@ public class ClientForm extends javax.swing.JFrame {
         lblStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblStatus.setText("Desconectado");
 
+        txtAreaOutput.setEditable(false);
         txtAreaOutput.setColumns(20);
         txtAreaOutput.setRows(5);
         jScrollPane2.setViewportView(txtAreaOutput);
